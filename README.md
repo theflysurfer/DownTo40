@@ -1,11 +1,62 @@
-# Analyse Énergie Non Utilisée France (2022-2024)
+# ⚡ DownTo40 - Analyse Énergie ≤40€/MWh France
 
-## Objectif
-Quantifier l'énergie disponible à ≤40€/MWh non utilisée en France :
-1. Exports vers pays frontaliers à ≤40€/MWh
-2. Nucléaire non produit (contraintes réseau)
-3. Écrêtage solaire/éolien
-4. Périodes à prix négatifs
+[![Dashboard](https://img.shields.io/badge/Dashboard-Live-green)](https://energie.srv759970.hstgr.cloud/)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-blue)](https://github.com/theflysurfer/DownTo40)
+
+Analyse de l'énergie disponible à ≤40€/MWh en France (2022-2024) pour répondre à la question business:
+
+> **"J'ai besoin de MWh à 40€/MWh. Combien de MWh ont été:**
+> - ✈️ **Vendus aux pays frontaliers** à ≤40€ ?
+> - ⚛️ **Non produits par le nucléaire** (contraintes réseau, priorité dispatch) ?
+> - 🌞 **Écrêtés** (solaire, éolien) à cause de prix négatifs ?"
+
+## 🎯 Résultats Phase 1
+
+**Dashboard en production**: https://energie.srv759970.hstgr.cloud/
+
+- ✅ **4,201 heures** identifiées avec prix ≤40€/MWh (16% du temps)
+- ✅ **503 heures** à prix négatifs (opportunités maximales)
+- ✅ **Tendance claire**: 0.9% (2022) → 11.8% (2023) → 35.2% (2024)
+- ✅ **26,254 heures** de données scrapées (99.8% succès)
+
+## 🚀 Quick Start
+
+### Voir le Dashboard
+```bash
+# Ouvrir dans le navigateur
+https://energie.srv759970.hstgr.cloud/
+# Credentials: julien / DevAccess2025
+```
+
+### Déployer une mise à jour
+```bash
+# 1. Modifier le code localement
+# 2. Commiter et pusher
+git add .
+git commit -m "feat: votre modification"
+git push origin main
+
+# 3. Déployer sur le serveur (Windows)
+deploy-update.bat
+
+# Ou sur Linux/Mac
+./deploy-update.sh
+```
+
+### Lancer localement
+```bash
+# Installer les dépendances
+pip install -r requirements.txt
+
+# Lancer le dashboard
+streamlit run dashboard_entso_prices.py
+```
+
+## 📚 Documentation
+
+- **[DEPLOYMENT.md](DEPLOYMENT.md)** - Guide complet de déploiement et maintenance
+- **[GUIDE_UTILISATION.md](GUIDE_UTILISATION.md)** - Utilisation du dashboard
+- **[docs/SCRAPING_SUMMARY.md](docs/SCRAPING_SUMMARY.md)** - Détails du scraping ENTSO-E
 
 ## Sources de données
 
