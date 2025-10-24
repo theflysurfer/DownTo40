@@ -581,7 +581,7 @@ else:  # "📈 Évolution temporelle"
     st.plotly_chart(fig_box, use_container_width=True)
 
 # === PAGE 5: SOURCES ===
-elif page == "📚 Sources":
+elif page == "\U0001F4DA Sources":  # 📚 emoji as Unicode escape
     st.title("📚 Sources et Validation des Données")
 
     st.markdown("""
