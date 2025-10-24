@@ -54,9 +54,11 @@ with st.sidebar:
 
     st.markdown("---")
 
-    page = st.radio(
+    page_options = ["🎯 Problématique", "📊 Vue d'ensemble", "📈 Analyse détaillée", "💰 Prix ≤40€/MWh", "📚 Sources"]
+    page_idx = st.radio(
         "Navigation",
-        ["🎯 Problématique", "📊 Vue d'ensemble", "📈 Analyse détaillée", "💰 Prix ≤40€/MWh", "📚 Sources"]
+        range(len(page_options)),
+        format_func=lambda i: page_options[i]
     )
 
     st.markdown("---")
@@ -75,7 +77,7 @@ with st.sidebar:
 full_df, summary_df, monthly_df, below_40_df = load_price_data()
 
 # === PAGE 0: PROBLÉMATIQUE ===
-if page == "🎯 Problématique":
+if page_idx == 0:
     st.title("⚡ Énergie Disponible à ≤40€/MWh en France")
     st.markdown("## 🎯 Problématique & Contexte")
 
@@ -189,7 +191,7 @@ if page == "🎯 Problématique":
     """)
 
 # === PAGE 1: VUE D'ENSEMBLE ===
-elif page == "📊 Vue d'ensemble":
+elif page_idx == 1:
     st.title("⚡ Prix de l'Électricité en France (2022-2024)")
     st.markdown("## 🎯 Synthèse des données ENTSO-E")
 
@@ -315,7 +317,7 @@ elif page == "📊 Vue d'ensemble":
         """)
 
 # === PAGE 2: ANALYSE DÉTAILLÉE ===
-elif page == "📈 Analyse détaillée":
+elif page_idx == 2:
     st.title("📈 Analyse Détaillée des Prix")
 
     # Monthly trends
@@ -421,7 +423,7 @@ elif page == "📈 Analyse détaillée":
             st.metric(row['period'], f"{row['is_below_40']:.1f}%")
 
 # === PAGE 3: PRIX ≤40€/MWh ===
-elif page == "💰 Prix ≤40€/MWh":
+elif page_idx == 3:
     st.title("💰 Analyse des Prix ≤40€/MWh")
 
     total_below_40 = len(below_40_df)
@@ -503,86 +505,10 @@ elif page == "💰 Prix ≤40€/MWh":
         for _, row in best_hours.iterrows():
             st.write(f"**{int(row['hour'])}h**: {int(row['count']):,} occurrences")
 
-# === PAGE 4: ÉVOLUTION TEMPORELLE ===
-else:  # "📈 Évolution temporelle"
-    st.title("📈 Évolution Temporelle des Prix")
-
-    # Year selector
-    selected_year = st.selectbox("Sélectionner une année", [2022, 2023, 2024])
-
-    year_df = full_df[full_df['year'] == selected_year].copy()
-
-    st.markdown(f"### Prix horaires {selected_year}")
-
-    # Time series
-    fig_ts = go.Figure()
-
-    fig_ts.add_trace(go.Scatter(
-        x=year_df['datetime'],
-        y=year_df['price'],
-        mode='lines',
-        name='Prix',
-        line=dict(color='#1f77b4', width=1)
-    ))
-
-    # Add 40€ threshold line
-    fig_ts.add_hline(
-        y=40,
-        line_dash="dash",
-        line_color="red",
-        annotation_text="Seuil 40€/MWh",
-        annotation_position="right"
-    )
-
-    fig_ts.update_layout(
-        title=f"Évolution du prix horaire en {selected_year}",
-        xaxis_title="Date",
-        yaxis_title="Prix (€/MWh)",
-        hovermode='x unified',
-        height=500
-    )
-
-    st.plotly_chart(fig_ts, use_container_width=True)
-
-    # Statistics for selected year
-    st.markdown(f"### 📊 Statistiques {selected_year}")
-
-    col1, col2, col3, col4 = st.columns(4)
-
-    with col1:
-        st.metric("Prix moyen", f"{year_df['price'].mean():.2f}€")
-
-    with col2:
-        st.metric("Prix médian", f"{year_df['price'].median():.2f}€")
-
-    with col3:
-        below_40_count = year_df['is_below_40'].sum()
-        st.metric("Heures ≤40€", f"{int(below_40_count):,}")
-
-    with col4:
-        negative_count = year_df['is_negative'].sum()
-        st.metric("Heures <0€", f"{int(negative_count):,}")
-
-    # Box plot by month
-    st.markdown(f"### 📦 Distribution mensuelle des prix en {selected_year}")
-
-    year_df['month_name'] = year_df['datetime'].dt.strftime('%b')
-
-    fig_box = px.box(
-        year_df,
-        x='month',
-        y='price',
-        title=f"Distribution des prix par mois ({selected_year})",
-        labels={'price': 'Prix (€/MWh)', 'month': 'Mois'},
-        category_orders={'month': list(range(1, 13))}
-    )
-
-    fig_box.update_layout(height=500)
-    st.plotly_chart(fig_box, use_container_width=True)
-
-# === PAGE 5: SOURCES ===
-elif page == "\U0001F4DA Sources":  # 📚 emoji as Unicode escape
+# === PAGE 4: SOURCES ===
+elif page_idx == 4:
     st.title("📚 Sources et Validation des Données")
+
 
     st.markdown("""
     Cette page recense toutes les sources externes utilisées pour valider les ordres de grandeur
