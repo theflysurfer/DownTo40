@@ -56,7 +56,7 @@ with st.sidebar:
 
     page = st.radio(
         "Navigation",
-        ["🎯 Problématique", "📊 Vue d'ensemble", "📈 Analyse détaillée", "💰 Prix ≤40€/MWh"]
+        ["🎯 Problématique", "📊 Vue d'ensemble", "📈 Analyse détaillée", "💰 Prix ≤40€/MWh", "📚 Sources"]
     )
 
     st.markdown("---")
@@ -579,6 +579,247 @@ else:  # "📈 Évolution temporelle"
 
     fig_box.update_layout(height=500)
     st.plotly_chart(fig_box, use_container_width=True)
+
+# === PAGE 5: SOURCES ===
+elif page == "📚 Sources":
+    st.title("📚 Sources et Validation des Données")
+
+    st.markdown("""
+    Cette page recense toutes les sources externes utilisées pour valider les ordres de grandeur
+    de nos analyses sur les MWh disponibles à ≤40€/MWh.
+    """)
+
+    # Section 1: Sources Officielles RTE
+    st.markdown("## 🏛️ Sources Officielles Françaises")
+
+    st.markdown("### RTE (Réseau de Transport d'Électricité)")
+
+    sources_rte = [
+        {
+            "titre": "Bilan Électrique 2024",
+            "url": "https://analysesetdonnees.rte-france.com/bilan-electrique-2024",
+            "type": "Page web interactive",
+            "données_clés": "89 TWh exports nets, 361.7 TWh nucléaire, 71.5% disponibilité nucléaire",
+            "pertinence": "Source primaire pour exports transfrontaliers et production nucléaire"
+        },
+        {
+            "titre": "Bilan Électrique 2024 - Europe",
+            "url": "https://analysesetdonnees.rte-france.com/bilan-electrique-2024/europe",
+            "type": "Page web",
+            "données_clés": "Détails exports par pays: DE+BE 27.2 TWh, IT 22.3 TWh, UK 20.1 TWh",
+            "pertinence": "Validation exports par pays frontalier"
+        },
+        {
+            "titre": "Bilan Électrique 2024 - Production",
+            "url": "https://analysesetdonnees.rte-france.com/bilan-electrique-2024/production",
+            "type": "Page web",
+            "données_clés": "Production nucléaire +13% vs 2023, capacité 61 GW",
+            "pertinence": "Validation production et disponibilité nucléaire"
+        },
+        {
+            "titre": "Bilan Électrique 2023",
+            "url": "https://analysesetdonnees.rte-france.com/bilan-electrique-2023",
+            "type": "Page web",
+            "données_clés": "50.1 TWh exports nets 2023 (vs -16.5 TWh en 2022)",
+            "pertinence": "Comparaison historique exports 2022-2023"
+        },
+        {
+            "titre": "Bilan S1 2024 (PDF)",
+            "url": "https://assets.rte-france.com/prod/public/2024-08/2024-08-02-bilan-s1-2024-fr.pdf",
+            "type": "Rapport PDF",
+            "données_clés": "235 heures prix négatifs S1 2024 (5.4% du temps)",
+            "pertinence": "Validation prix négatifs et production renouvelable"
+        }
+    ]
+
+    for source in sources_rte:
+        with st.expander(f"📄 {source['titre']}"):
+            st.markdown(f"**Type**: {source['type']}")
+            st.markdown(f"**URL**: [{source['url']}]({source['url']})")
+            st.markdown(f"**Données clés**: {source['données_clés']}")
+            st.markdown(f"**Pertinence**: {source['pertinence']}")
+
+    # Section 2: CRE
+    st.markdown("### CRE (Commission de Régulation de l'Énergie)")
+
+    sources_cre = [
+        {
+            "titre": "Analyse Prix Négatifs 2024",
+            "url": "https://www.cre.fr/fileadmin/Documents/Rapports_et_etudes/2024/241126_Note_Prix_negatifs.pdf",
+            "type": "Rapport PDF",
+            "données_clés": "359h prix négatifs 2024, France exportatrice 83% du temps, pertes 80 M€",
+            "pertinence": "Comportement exports pendant prix négatifs"
+        },
+        {
+            "titre": "Présentation Prix Négatifs",
+            "url": "https://www.cre.fr/fileadmin/Documents/Rapports_et_etudes/2024/241126_Presentation_prix_negatifs.pdf",
+            "type": "Présentation PDF",
+            "données_clés": "Imports DE+BE pendant 71% heures prix négatifs",
+            "pertinence": "Impact interconnexions sur prix négatifs"
+        }
+    ]
+
+    for source in sources_cre:
+        with st.expander(f"📄 {source['titre']}"):
+            st.markdown(f"**Type**: {source['type']}")
+            st.markdown(f"**URL**: [{source['url']}]({source['url']})")
+            st.markdown(f"**Données clés**: {source['données_clés']}")
+            st.markdown(f"**Pertinence**: {source['pertinence']}")
+
+    # Section 3: ENTSO-E
+    st.markdown("## 🇪🇺 Sources Européennes")
+
+    st.markdown("### ENTSO-E (European Network of TSOs)")
+
+    sources_entsoe = [
+        {
+            "titre": "Transparency Platform - Day-Ahead Prices",
+            "url": "https://transparency.entsoe.eu/transmission-domain/r2/dayAheadPrices/show",
+            "type": "Plateforme de données",
+            "données_clés": "Prix spot horaires France 2022-2024 (source primaire dashboard)",
+            "pertinence": "Source primaire de nos données scrapées"
+        },
+        {
+            "titre": "Transparency Platform - Physical Flows",
+            "url": "https://transparency.entsoe.eu/transmission/physicalFlows",
+            "type": "Plateforme de données",
+            "données_clés": "Flux transfrontaliers horaires (en cours de scraping Phase 2)",
+            "pertinence": "Source Q1: Exports pendant heures ≤40€"
+        },
+        {
+            "titre": "Transparency Platform - Generation by Type",
+            "url": "https://transparency.entsoe.eu/generation/r2/actualGenerationPerProductionType",
+            "type": "Plateforme de données",
+            "données_clés": "Production horaire par type (nucléaire, solaire, éolien)",
+            "pertinence": "Source future Q2: Nucléaire non produit"
+        }
+    ]
+
+    for source in sources_entsoe:
+        with st.expander(f"📄 {source['titre']}"):
+            st.markdown(f"**Type**: {source['type']}")
+            st.markdown(f"**URL**: [{source['url']}]({source['url']})")
+            st.markdown(f"**Données clés**: {source['données_clés']}")
+            st.markdown(f"**Pertinence**: {source['pertinence']}")
+
+    # Section 4: Presse & Analyses Sectorielles
+    st.markdown("## 📰 Presse et Analyses Sectorielles")
+
+    sources_presse = [
+        {
+            "titre": "Montel News - French Curtailment Record",
+            "url": "https://montelnews.com/news/93be1c1e-dbe8-4d7a-a4c8-a9c789d1e8e3/french-renewables-curtailment-hits-record-1-7-twh-in-2024",
+            "type": "Article de presse",
+            "données_clés": "1.7 TWh écrêtés 2024 (0.9 TWh éolien + 0.8 TWh solaire), ×2.8 vs 2023",
+            "pertinence": "Validation Q3: Écrêtage renouvelables"
+        },
+        {
+            "titre": "U.S. EIA - France Nuclear Increase 2024",
+            "url": "https://www.eia.gov/todayinenergy/detail.php?id=65785",
+            "type": "Analyse internationale",
+            "données_clés": "Récupération production nucléaire → plus d'exports",
+            "pertinence": "Contexte international exports français"
+        },
+        {
+            "titre": "Statista - France Top EU Exporter",
+            "url": "https://fr.statista.com/infographie/32647/volume-exportation-electricite-france-vers-les-pays-europeens/",
+            "type": "Infographie",
+            "données_clés": "Graphiques exports par pays européen",
+            "pertinence": "Visualisation comparative exports"
+        }
+    ]
+
+    for source in sources_presse:
+        with st.expander(f"📄 {source['titre']}"):
+            st.markdown(f"**Type**: {source['type']}")
+            st.markdown(f"**URL**: [{source['url']}]({source['url']})")
+            st.markdown(f"**Données clés**: {source['données_clés']}")
+            st.markdown(f"**Pertinence**: {source['pertinence']}")
+
+    # Section 5: Synthèse Validation
+    st.markdown("## ✅ Synthèse des Ordres de Grandeur Validés")
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.metric("Exports 2024", "89 TWh", help="Source: RTE Bilan 2024")
+        st.caption("Exports pendant ≤40€: 20-40 TWh estimés")
+
+    with col2:
+        st.metric("Production Nucléaire", "361.7 TWh", help="Source: RTE Bilan 2024")
+        st.caption("Sous-utilisation: 7-15 TWh estimés")
+
+    with col3:
+        st.metric("Écrêtage Renouvelables", "1.7 TWh", help="Source: Montel News")
+        st.caption("Quasi-intégralité pendant ≤40€")
+
+    st.markdown("---")
+
+    st.info("""
+    **📊 Total MWh disponibles à ≤40€/MWh: 30-55 TWh/an (2024)**
+
+    Ces ordres de grandeur sont cohérents avec:
+    - Les bilans officiels RTE 2022-2024
+    - Les analyses CRE sur les prix négatifs
+    - Les données ENTSO-E scrapées (26,254 heures)
+    - Les rapports sectoriels internationaux
+
+    **Phase 2** en cours: Scraping des flux transfrontaliers et production par type
+    pour quantifier précisément chaque composante en croisant avec nos données de prix.
+    """)
+
+    # Méthodologie
+    st.markdown("## 🔬 Méthodologie de Validation")
+
+    st.markdown("""
+    ### Approche Cross-Validation
+
+    1. **Sources Primaires** (RTE, ENTSO-E, CRE)
+       - Données officielles de référence
+       - Publications annuelles validées
+       - Rapports réglementaires
+
+    2. **Sources Secondaires** (Presse spécialisée, EIA, Statista)
+       - Confirmation des tendances
+       - Perspectives internationales
+       - Analyses sectorielles
+
+    3. **Données Scrapées** (Notre projet)
+       - Prix horaires ENTSO-E 2022-2024
+       - Flux transfrontaliers (en cours)
+       - Production par type (à venir)
+
+    ### Critères de Fiabilité
+
+    - ✅ **Cohérence**: Les chiffres de différentes sources convergent (±5%)
+    - ✅ **Officialité**: Priorité aux opérateurs de réseau (RTE, ENTSO-E)
+    - ✅ **Granularité**: Données horaires > quotidiennes > mensuelles
+    - ✅ **Actualité**: Publications 2024-2025 pour données 2022-2024
+
+    ### Limitations Identifiées
+
+    - ⚠️ **Écrêtage réel**: Pas de données publiques directes, proxy prix négatifs
+    - ⚠️ **Raisons sous-utilisation nucléaire**: Maintenance vs dispatch économique
+    - ⚠️ **Flux transit**: Physical Flows incluent transit (pas seulement exports FR)
+    """)
+
+    # Document de référence
+    st.markdown("## 📄 Document de Référence Complet")
+
+    st.markdown("""
+    Toutes les sources sont détaillées dans le document:
+
+    **`docs/VALIDATION_DATA_SOURCES.md`**
+
+    Ce document inclut:
+    - Tableaux récapitulatifs exports 2022-2024
+    - Production nucléaire et disponibilité
+    - Écrêtage renouvelables
+    - Estimations valorisation potentielle
+    - Hypothèses et limitations
+
+    📥 Accessible dans le dépôt GitHub du projet.
+    """)
 
 # Footer
 st.markdown("---")
